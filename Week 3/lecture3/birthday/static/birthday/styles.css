@@ -1,0 +1,15 @@
+h1 {
+    font-size: 250px;
+}
+
+.large {
+    font-size: x-large;
+}
+
+.center {
+    text-align: center;
+}
+
+.midDiv {
+    margin-bottom: 100px;
+}

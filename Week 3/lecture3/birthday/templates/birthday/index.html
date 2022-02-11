@@ -1,0 +1,22 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang = "en">
+    <head>
+        <title>Is It Ömer's Birtday?</title>
+        <link rel="stylesheet" href="{% static 'birthday/styles.css' %}">
+    </head>
+    <body class = "center">
+        {% if birthday %}
+            <h1>YES</h1>
+        {% else %}
+            <h1>NO</h1>
+        {% endif %}
+        <div class = "large midDiv">
+            <a1>Trust me it says yes when it is.</a1>
+        </div>
+        <div>
+            <a1>Did you really need this site though >:(</a1>
+        </div>
+    </body>
+</html>

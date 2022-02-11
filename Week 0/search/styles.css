@@ -1,0 +1,82 @@
+.linkDiv{
+    text-align: right;
+    margin-top: 10px;
+}
+
+.link {
+    text-align: right;
+    margin: 10px;
+    color: grey;
+    text-decoration-line: none;
+}
+
+.link:hover {
+    color: blue;
+    text-decoration-line: underline;
+}
+
+.searchBar {
+    width: 583px;
+    height: 44px;
+    margin-top: 50px;
+    margin-bottom: 22px;
+    padding-left: 20px;
+    border: 1px solid #D0D3D4;
+    border-radius: 25px;
+    font-family: arial, sans-serif;
+    font-size: 16px;
+}
+
+.searchBar:focus {
+    border: 1px solid black;
+    outline: 0px;
+}
+
+.searchButton {
+    width: 140px;
+    height: 40px;
+    font-family: arial, sans-serif;
+    font-size: 16px;
+    background-color: #D0D3D4;
+    border: none;
+    border-radius: 5px;
+    margin: 3px;
+}
+
+.searchButton:hover {
+    border: 1px solid black;
+}
+
+.advancedSearchBar {
+    width: 572px;
+    height: 29px;
+    margin: 10px;
+    padding-left: 5px;
+    border: 1px solid #D0D3D4;
+    font-family: arial, sans-serif;
+    font-size: 14px;
+}
+
+.advancedSearchBar:focus {
+    border: 1px solid blue;
+    outline: 0px;
+}
+
+.advancedSearchButton {
+    width: 140px;
+    height: 40px;
+    background-color: cornflowerblue;
+    font-size: 14px;
+    font-family: arial, sans-serif;
+    color: white;
+    border: none;
+    border-radius: 3px;
+    margin-left: 10px;
+    margin-top: 10px;
+}
+
+.advancedSearchButton:hover {
+    border: 1px solid black;
+    outline: 0px;
+    background-color: #3498DB;
+}
