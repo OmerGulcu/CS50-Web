@@ -6,7 +6,7 @@ class Listing(models.Model):
     name = models.CharField(max_length=64)
     description = models.CharField(max_length=500)
     starting_bid = models.PositiveIntegerField()
-    image = models.ImageField(upload_to="images/")
+    image = models.CharField(max_length=2048, blank=True)
     user = models.ForeignKey('User', on_delete=models.CASCADE, related_name="listings")
     watchlist = models.BooleanField(default=False)
 
