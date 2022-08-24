@@ -4,9 +4,10 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render
 from django.urls import reverse
 from django.contrib.auth.decorators import login_required
+from django import forms
+from django.forms import ModelForm
 
-from .models import User
-
+from .models import Listing, User
 
 def index(request):
     return render(request, "auctions/index.html")
@@ -65,4 +66,15 @@ def register(request):
 
 @login_required(login_url='login')
 def new_listing(request):
-    return render(request, "auctions/new_listing.html")
+    if request.method == "GET":
+        listing_form = ListingForm()
+    else:
+        listing_form = ListingForm(request.POST)
+        if listing_form.is_valid():
+            return HttpResponseRedirect(reverse("index"))
+    return render(request, "auctions/new_listing.html", {"form": listing_form})
+
+class ListingForm(ModelForm):
+    class Meta:
+        model = Listing
+        fields = ["name", "description", "starting_bid", "image"]
