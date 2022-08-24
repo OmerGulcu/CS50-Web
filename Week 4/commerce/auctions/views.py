@@ -70,8 +70,22 @@ def new_listing(request):
         listing_form = ListingForm()
     else:
         listing_form = ListingForm(request.POST)
-        if listing_form.is_valid():
-            return HttpResponseRedirect(reverse("index"))
+        if request.user.is_authenticated:
+            if listing_form.is_valid():
+
+                # Get cleaned data
+                name = listing_form.cleaned_data["name"]
+                description = listing_form.cleaned_data["description"]
+                starting_bid = listing_form.cleaned_data["starting_bid"]
+                image = listing_form.cleaned_data["image"]
+                creator = request.user
+
+                # Save as a listing
+                listing = Listing(name = name, description = description, starting_bid = starting_bid, image = image, creator = creator)
+                listing.save()
+                return HttpResponseRedirect(reverse("index"))
+        else:
+            return HttpResponseRedirect(reverse("login"))
     return render(request, "auctions/new_listing.html", {"form": listing_form})
 
 class ListingForm(ModelForm):
