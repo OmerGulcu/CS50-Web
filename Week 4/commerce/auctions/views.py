@@ -97,3 +97,9 @@ class ListingForm(ModelForm):
         labels = {
             "image": "Image (url):"
         }
+
+def view_listing(request, id):
+    listing = Listing.objects.get(id=id)
+    return render(request, "auctions/view_listing.html", {
+        "listing": listing
+    })
