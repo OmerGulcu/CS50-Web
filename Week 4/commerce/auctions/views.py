@@ -10,8 +10,10 @@ from django.forms import ModelForm
 from .models import Listing, User
 
 def index(request):
-    return render(request, "auctions/index.html")
-
+    listings = Listing.objects.all()
+    return render(request, "auctions/index.html", {
+        "listings": listings
+    })
 
 def login_view(request):
     if request.method == "POST":
@@ -91,4 +93,7 @@ def new_listing(request):
 class ListingForm(ModelForm):
     class Meta:
         model = Listing
-        fields = ["name", "description", "starting_bid", "image"]
+        fields = ("name", "description", "starting_bid", "image")
+        labels = {
+            "image": "Image (url):"
+        }
