@@ -1,3 +1,49 @@
 body {
     padding: 10px;
 }
+
+.listing_div {
+    padding: 10px;
+    border-radius: 10px;
+    color: black;
+}
+
+.listing_div:hover {
+    background-color: lightgrey;
+    text-decoration: none;
+}
+
+img {
+    border-radius: 10px;
+    background-color: lightblue;
+}
+
+.linked_listing:link {
+    text-decoration: none;
+}
+
+.linked_listing:visited {
+    text-decoration: none;
+}
+
+.linked_listing:hover {
+    text-decoration: none;
+}
+
+.linked_listing:active {
+    text-decoration: none;
+}
+
+.view_div {
+    text-align: center;
+}
+
+.view_div img {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    height: auto;
+    width: auto;
+    max-width: 60%;
+    max-height: 540px;
+}

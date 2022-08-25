@@ -6,14 +6,20 @@
         {% if listing.id != 1 %}
         <hr>
         {% endif %}
-        <div>
-        <h5>{{ listing.name }}</h5>
-        {{ listing.description }}
-        {% comment %} Will be changed to get the highest bid {% endcomment %}
-        <br> <b>Current Price: </b> ${{ listing.starting_bid }}
-        {% if listing.image %}
-        <br> <img src="{{ listing.image }}" alt="image not available" height="360">
-        {% endif %}
-        </div>
+        <a href="viewlisting/{{ listing.id }}" class="linked_listing">
+            <div class="listing_div">
+            <h5>{{ listing.name }}</h5>
+
+            {{ listing.description }}
+
+            {% comment %} Will be changed to get the highest bid {% endcomment %}
+            <br> <b>Current Price: </b> ${{ listing.starting_bid }}
+            
+            {% if listing.image %}
+                <br> <img src="{{ listing.image }}" alt="image not available" height="360">
+            {% endif %}
+
+            </div>
+        </a>
     {% endfor %}
 {% endblock %}
