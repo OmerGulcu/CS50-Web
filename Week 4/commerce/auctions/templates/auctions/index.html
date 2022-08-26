@@ -1,7 +1,12 @@
 {% extends "auctions/layout.html" %}
 
 {% block body %}
-    <h2>Active Listings</h2>
+    {% if watchlist_only %}
+        <h2>Watchlist</h2>
+    {% else %}
+        <h2>Active Listings</h2>
+    {% endif %}
+    
     {% for listing in listings %}
         {% if listing.id != 1 %}
         <hr>
@@ -21,5 +26,7 @@
 
             </div>
         </a>
+    {% empty %}
+        No listings.
     {% endfor %}
 {% endblock %}

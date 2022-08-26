@@ -7,12 +7,12 @@ from django.contrib.auth.decorators import login_required
 from django import forms
 from django.forms import ModelForm
 
-from .models import Listing, User
+from .models import Listing, User, Watching
 
 def index(request):
     listings = Listing.objects.all()
     return render(request, "auctions/index.html", {
-        "listings": listings
+        "listings": listings, "watchlist_only": False
     })
 
 def login_view(request):
@@ -99,7 +99,35 @@ class ListingForm(ModelForm):
         }
 
 def view_listing(request, id):
+    user = request.user
+    listing = Listing.objects.get(id=id)
+
+    try:
+        Watching.objects.get(user = user, listing = listing)
+        watched = True
+    except Watching.DoesNotExist:
+        watched = False
+
+    if request.method == "POST":
+        if not watched:
+            watching = Watching(user = user, listing = listing)
+            watching.save()
+            watched = True
+        else:
+            Watching.objects.get(user = user, listing = listing).delete()
+            watched = False
+
     listing = Listing.objects.get(id=id)
     return render(request, "auctions/view_listing.html", {
-        "listing": listing
+       "listing": listing, "watched": watched
+    })
+
+@login_required(login_url="login")
+def watchlist(request):
+    watchings = request.user.watchings.all()
+    listings = []
+    for watching in watchings:
+        listings.append(watching.listing)
+    return render(request, "auctions/index.html", {
+        "listings": listings, "watchlist_only": True
     })
