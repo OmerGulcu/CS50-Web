@@ -88,7 +88,7 @@ def new_listing(request):
                 return HttpResponseRedirect(reverse("index"))
         else:
             return HttpResponseRedirect(reverse("login"))
-    return render(request, "auctions/new_listing.html", {"form": listing_form})
+    return render(request, "auctions/new_listing.html", {"forma": listing_form})
 
 class ListingForm(ModelForm):
     class Meta:
@@ -106,6 +106,8 @@ def view_listing(request, id):
         Watching.objects.get(user = user, listing = listing)
         watched = True
     except Watching.DoesNotExist:
+        watched = False
+    except TypeError:
         watched = False
 
     if request.method == "POST":
