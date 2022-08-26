@@ -8,9 +8,6 @@
     {% endif %}
     
     {% for listing in listings %}
-        {% if listing.id != 1 %}
-        <hr>
-        {% endif %}
         <a href="viewlisting/{{ listing.id }}" class="linked_listing">
             <div class="listing_div">
             <h5>{{ listing.name }}</h5>
@@ -21,11 +18,11 @@
             <br> <b>Current Price: </b> ${{ listing.starting_bid }}
             
             {% if listing.image %}
-                <br> <img src="{{ listing.image }}" alt="image not available" height="360">
+                <br> <img src="{{ listing.image }}" alt="image not available" height="240">
             {% endif %}
 
             </div>
-        </a>
+        </a> <hr>
     {% empty %}
         No listings.
     {% endfor %}
