@@ -1,30 +1,42 @@
 {% extends "auctions/layout.html" %}
 
 {% block body %}
-    <div class="view_div">
+    <div class="view_div_1">
         <h3>{{ listing.name }}</h3>
-
         {{ listing.description }} <br>
-
-        {% if listing.image %}
-            <br> <img src="{{ listing.image }}" alt="image not available" height="360">
-        {% endif %}
-
-        {% comment %} Will be changed to get the highest bid {% endcomment %}
-        <br> <b>Current Price: </b> ${{ listing.starting_bid }} <br>
     </div>
-    {% if user.is_authenticated %}
-        <div style="text-align: center;">
-            <form action="/viewlisting/{{ listing.id }}" method="POST">
-                {% csrf_token %}
-                {% if watched %}
-                    <input type="submit" value="In Watchlist" id="rm_watched_listing">
-                {% else %}
-                    <input type="submit" value="Add to Watchlist" id="watch_listing">
-                {% endif %}
-            </form> <br>
-        </div>
-    {% else %}
-    <br>
+    {% if listing.image %}
+        <br> <img src="{{ listing.image }}" alt="image not available" id="view_image">
     {% endif %}
+    {% if user.is_authenticated %}
+        {% if user != listing.creator %}
+            <div class="view_div_2"> <br>
+                <b>Current Price: </b> ${{ listing.price }}
+                {% if listing.winner %} <br>
+                    {% if listing.winner == user %}
+                        Your bid is the highest.
+                    {% else %}
+                        Highest bid was made by {{ listing.winner }}.
+                    {% endif %}
+                {% endif %} <br> <br>
+                <form action="/viewlisting/{{ listing.id }}" method="POST">
+                    {% csrf_token %}
+                    {{ bid_form }}
+                    <input type="submit" value="Place Bid" name="post" class="bid_input">
+                </form>
+                {% if message %}
+                    {{ message|safe }} <br> 
+                {% endif %} <br>
+                <form action="/viewlisting/{{ listing.id }}" method="POST">
+                    {% csrf_token %}
+                    {% if watched %}
+                        <input type="submit" value="In Watchlist" id="rm_watched_listing" name="post">
+                    {% else %}
+                        <input type="submit" value="Add to Watchlist" id="watch_listing" name="post">
+                    {% endif %}
+                </form>
+            </div>
+        {% endif %}
+    {% endif %} <hr>
+    <p class="view_creator">Listed by <b>{{ listing.creator }}</b></p>
 {% endblock %}

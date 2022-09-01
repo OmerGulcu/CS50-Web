@@ -7,12 +7,12 @@ from django.contrib.auth.decorators import login_required
 from django import forms
 from django.forms import ModelForm
 
-from .models import Listing, User, Watching
+from .models import User, Listing, Bid, Comment, Watching
 
 def index(request):
     listings = Listing.objects.all()
     return render(request, "auctions/index.html", {
-        "listings": listings, "watchlist_only": False
+        "listings": listings, "header": "Active Listings"
     })
 
 def login_view(request):
@@ -78,12 +78,13 @@ def new_listing(request):
                 # Get cleaned data
                 name = listing_form.cleaned_data["name"]
                 description = listing_form.cleaned_data["description"]
-                starting_bid = listing_form.cleaned_data["starting_bid"]
+                price = listing_form.cleaned_data["price"]
                 image = listing_form.cleaned_data["image"]
+                category = listing_form.cleaned_data["category"]
                 creator = request.user
 
                 # Save as a listing
-                listing = Listing(name = name, description = description, starting_bid = starting_bid, image = image, creator = creator)
+                listing = Listing(name = name, description = description, price = price, image = image, category = category, creator = creator)
                 listing.save()
                 return HttpResponseRedirect(reverse("index"))
         else:
@@ -93,7 +94,7 @@ def new_listing(request):
 class ListingForm(ModelForm):
     class Meta:
         model = Listing
-        fields = ("name", "description", "starting_bid", "image")
+        fields = ("name", "description", "price", "image", "category")
         labels = {
             "image": "Image (url):"
         }
@@ -101,6 +102,7 @@ class ListingForm(ModelForm):
 def view_listing(request, id):
     user = request.user
     listing = Listing.objects.get(id=id)
+    error = False
 
     try:
         Watching.objects.get(user = user, listing = listing)
@@ -111,18 +113,37 @@ def view_listing(request, id):
         watched = False
 
     if request.method == "POST":
-        if not watched:
-            watching = Watching(user = user, listing = listing)
-            watching.save()
-            watched = True
-        else:
-            Watching.objects.get(user = user, listing = listing).delete()
-            watched = False
+        if request.POST["post"] == "Place Bid":
+            form = BidForm(request.POST)
+            if form.is_valid():
+                amount = form.cleaned_data["amount"]
+                if amount > listing.price:
+                    listing.price = amount
+                    listing.winner = user
+                    listing.save()
+                else:
+                    message = "Your bid must be higher than the current price."
+                    error = True
+        elif request.POST["post"] in ["In Watchlist", "Add to Watchlist"]:
+            if not watched:
+                watching = Watching(user = user, listing = listing)
+                watching.save()
+                watched = True
+            else:
+                Watching.objects.get(user = user, listing = listing).delete()
+                watched = False
 
-    listing = Listing.objects.get(id=id)
-    return render(request, "auctions/view_listing.html", {
-       "listing": listing, "watched": watched
-    })
+    if not error:
+        return render(request, "auctions/view_listing.html", {
+       "listing": listing, "watched": watched, "bid_form": BidForm()
+        })
+    else:
+        return render(request, "auctions/view_listing.html", {
+       "listing": listing, "watched": watched, "bid_form": BidForm(), "message": message
+        })
+    
+class BidForm(forms.Form):
+    amount = forms.IntegerField(label="")
 
 @login_required(login_url="login")
 def watchlist(request):
@@ -131,5 +152,20 @@ def watchlist(request):
     for watching in watchings:
         listings.append(watching.listing)
     return render(request, "auctions/index.html", {
-        "listings": listings, "watchlist_only": True
+        "listings": listings, "header": "Watchlist"
+    })
+
+category_list = ["toys", "electronics", "home", "fashion"]
+
+def category(request, category):
+    if category not in category_list:
+        return HttpResponse("Page not found.")
+    listings = Listing.objects.filter(category=category)
+    return render(request, "auctions/index.html", {
+        "listings": listings, "header": category.capitalize()
+    })
+
+def categories(request):
+    return render(request, "auctions/categories.html", {
+        "categories": category_list
     })

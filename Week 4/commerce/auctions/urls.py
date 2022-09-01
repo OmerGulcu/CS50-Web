@@ -1,3 +1,4 @@
+from unicodedata import category
 from django.urls import path
 
 from . import views
@@ -9,5 +10,7 @@ urlpatterns = [
     path("register", views.register, name="register"),
     path("newlisting", views.new_listing, name="new_listing"),
     path("viewlisting/<str:id>", views.view_listing, name="view_listing"),
-    path("watchlist", views.watchlist, name="watchlist")
+    path("watchlist", views.watchlist, name="watchlist"),
+    path("categories", views.categories, name="categories"),
+    path("<str:category>", views.category , name="category")
 ]

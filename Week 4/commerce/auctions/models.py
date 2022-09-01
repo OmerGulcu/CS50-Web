@@ -1,5 +1,6 @@
 from distutils.command.upload import upload
 from tkinter import CASCADE
+from unicodedata import category
 from django.contrib.auth.models import AbstractUser
 from django.db import models
 
@@ -9,8 +10,10 @@ class User(AbstractUser):
 class Listing(models.Model):
     name = models.CharField(max_length=64)
     description = models.CharField(max_length=500)
-    starting_bid = models.PositiveIntegerField()
+    price = models.PositiveIntegerField()
     image = models.CharField(max_length=2048, blank=True)
+    categories = [("toys", "Toys"), ("electronics", "Electronics"), ("home", "Home"), ("fashion", "Fashion")]
+    category = models.CharField(choices=categories, max_length=64, blank=True, null=True)
     creator = models.ForeignKey(User, on_delete=models.CASCADE, related_name="listings")
     winner = models.ForeignKey(User, on_delete=models.DO_NOTHING, null=True, blank=True)
     active = models.BooleanField(default=True)

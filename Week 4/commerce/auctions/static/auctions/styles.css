@@ -33,27 +33,53 @@ img {
     text-decoration: none;
 }
 
-.view_div {
+.view_div_1 {
+    max-width: 60%;
     text-align: center;
+    margin-left: auto;
+    margin-right: auto;
 }
 
-.view_div img {
+.view_div_2 {
+    max-width: 60%;
+    text-align: left;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+#view_image {
     display: block;
     margin-left: auto;
     margin-right: auto;
     height: auto;
     width: auto;
     max-width: 60%;
-    max-height: 540px;
+    max-height: 720px;
 }
 
-input {
+.view_creator {
+    text-align: center;
+}
+
+input, select {
     border: none;
     border-radius: 5px;
     background-color: lightgrey;
     padding: 5px;
+}
+
+.new_listing_from input, select {
     margin-right: 20px;
     margin-top: 10px;
+}
+
+select {
+    height: 34px;
+    -webkit-appearance: none;
+    background-image: url("https://cdn-icons-png.flaticon.com/512/37/37808.png");
+    background-position:72px;
+    background-repeat: no-repeat;
+    background-size: 13px;
 }
 
 #rm_watched_listing {
@@ -67,3 +93,14 @@ input {
 #watch_listing:hover, #rm_watched_listing:hover {
     border: 1px black solid;
 }
+
+.h3 { 
+
+    font-size: 1.17em;
+    margin-top: 1em;
+    margin-bottom: 1em;
+    margin-left: 0;
+    margin-right: 0;
+    font-weight: bold;
+  }
+
