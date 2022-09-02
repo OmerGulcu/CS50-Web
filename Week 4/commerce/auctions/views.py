@@ -118,9 +118,21 @@ def view_listing(request, id):
             if form.is_valid():
                 amount = form.cleaned_data["amount"]
                 if amount > listing.price:
-                    listing.price = amount
-                    listing.winner = user
+                    bid = Bid(amount=amount, listing=listing, user=user)
+                    bid.save()
+                    listing.price = bid.amount
+                    listing.winner = bid.user
                     listing.save()
+
+                    # Getting the highest bid in a listing
+
+                    # bids = listing.bids.all()
+                    # for bid in bids:
+                    #     if bid.amount > listing.price:
+                    #         listing.price = bid.amount
+                    #         listing.winner = bid.user
+                    #         listing.save()
+
                 else:
                     message = "Your bid must be higher than the current price."
                     error = True
