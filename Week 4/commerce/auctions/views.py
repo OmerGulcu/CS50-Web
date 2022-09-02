@@ -1,3 +1,5 @@
+from dataclasses import fields
+from http.client import INTERNAL_SERVER_ERROR
 from django.contrib.auth import authenticate, login, logout
 from django.db import IntegrityError
 from django.http import HttpResponse, HttpResponseRedirect
@@ -10,7 +12,7 @@ from django.forms import ModelForm
 from .models import User, Listing, Bid, Comment, Watching
 
 def index(request):
-    listings = Listing.objects.all()
+    listings = Listing.objects.filter(active="True")
     return render(request, "auctions/index.html", {
         "listings": listings, "header": "Active Listings"
     })
@@ -103,6 +105,7 @@ def view_listing(request, id):
     user = request.user
     listing = Listing.objects.get(id=id)
     error = False
+    comments = listing.comments.all()
 
     try:
         Watching.objects.get(user = user, listing = listing)
@@ -138,24 +141,49 @@ def view_listing(request, id):
                     error = True
         elif request.POST["post"] in ["In Watchlist", "Add to Watchlist"]:
             if not watched:
-                watching = Watching(user = user, listing = listing)
+                watching = Watching(user=user, listing=listing)
                 watching.save()
                 watched = True
             else:
-                Watching.objects.get(user = user, listing = listing).delete()
+                Watching.objects.get(user=user, listing=listing).delete()
                 watched = False
-
+        elif request.POST["post"] == "Close Listing":
+            listing.active = False
+            listing.save()
+        elif request.POST["post"] == "Submit Comment":
+            form = CommentForm(request.POST)
+            if form.is_valid():
+                comment = form.cleaned_data["comment"]
+                a_comment = Comment(comment=comment, listing=listing, user=user)
+                a_comment.save()
+        
     if not error:
         return render(request, "auctions/view_listing.html", {
-       "listing": listing, "watched": watched, "bid_form": BidForm()
+       "listing": listing, "watched": watched, "bid_form": BidForm(), "comment_form": CommentForm(), "comments": comments
         })
     else:
         return render(request, "auctions/view_listing.html", {
-       "listing": listing, "watched": watched, "bid_form": BidForm(), "message": message
+       "listing": listing, "watched": watched, "bid_form": BidForm(), "message": message, "comment_form": CommentForm(), "comments": comments
         })
     
-class BidForm(forms.Form):
-    amount = forms.IntegerField(label="")
+class BidForm(ModelForm):
+    class Meta:
+        model = Bid
+        fields = ("amount",)
+        labels = {
+            "amount": ""
+        }
+
+class CommentForm(ModelForm):
+    class Meta:
+        model = Comment
+        fields = ("comment",)
+        labels = {
+            "comment": ""
+        }
+        widgets = {
+            "comment": forms.Textarea(attrs={"rows": 1, "placeholder": "Add a comment...", "maxlength": 500}),
+        }
 
 @login_required(login_url="login")
 def watchlist(request):
@@ -172,7 +200,7 @@ category_list = ["toys", "electronics", "home", "fashion"]
 def category(request, category):
     if category not in category_list:
         return HttpResponse("Page not found.")
-    listings = Listing.objects.filter(category=category)
+    listings = Listing.objects.filter(category=category, active=True)
     return render(request, "auctions/index.html", {
         "listings": listings, "header": category.capitalize()
     })

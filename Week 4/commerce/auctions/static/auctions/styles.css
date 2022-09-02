@@ -61,6 +61,26 @@ img {
     text-align: center;
 }
 
+textarea {
+    width: 100%;
+    border-radius: 5px;
+    padding: 5px;
+    border-bottom-right-radius: 0px;
+}
+
+.quote {
+    opacity: 0.5;
+}
+
+#close_listing {
+    background-color: lightpink;
+}
+
+.closed_p {
+    color: lightcoral;
+    font-weight: bold;
+}
+
 input, select {
     border: none;
     border-radius: 5px;
@@ -86,16 +106,15 @@ select {
     background-color: lightgreen;
 }
 
-#watch_listing, #rm_watched_listing {
+#watch_listing, #rm_watched_listing, #close_listing {
     border: 1px transparent solid;
 }
 
-#watch_listing:hover, #rm_watched_listing:hover {
+#watch_listing:hover, #rm_watched_listing:hover, #close_listing:hover {
     border: 1px black solid;
 }
 
 .h3 { 
-
     font-size: 1.17em;
     margin-top: 1em;
     margin-bottom: 1em;
@@ -103,4 +122,3 @@ select {
     margin-right: 0;
     font-weight: bold;
   }
-
