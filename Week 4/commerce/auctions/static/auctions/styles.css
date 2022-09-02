@@ -33,6 +33,13 @@ img {
     text-decoration: none;
 }
 
+.price {
+    font-size: 1.25rem;
+    margin-left: 0;
+    margin-right: 0;
+    font-weight: 500;
+}
+
 .view_div_1 {
     max-width: 60%;
     text-align: center;
@@ -121,4 +128,4 @@ select {
     margin-left: 0;
     margin-right: 0;
     font-weight: bold;
-  }
+}

@@ -10,7 +10,7 @@
     {% endif %}
     {% if listing.active == True %}
         <div class="view_div_2">
-            <b>Current Price: </b> ${{ listing.price }}
+            <span class="price">Current Price:</span> ${{ listing.price }}
             {% if listing.winner %} <br>
                 {% if listing.winner == user %}
                     Your bid is the highest.
@@ -52,6 +52,8 @@
             <br> <h5>Comments</h5>
             {% for comment in comments %}
                 <p>{{ comment.comment }} <br> <span class="quote">-{{ comment.user }}</span></p>
+            {% empty %}
+                <p>No comments.</p>
             {% endfor %}
         </div> <hr>
         {% if user != listing.creator %}
