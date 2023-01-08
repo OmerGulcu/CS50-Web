@@ -78,7 +78,7 @@
 .advancedSearchButton:hover {
     cursor: pointer;
     outline: 0px;
-    background-color: #3498DB;
+    background-color: rgb(91, 142, 236);
 }
 
 img {
