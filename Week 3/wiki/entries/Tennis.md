@@ -1,3 +1,3 @@
 # Tennis
 
-[Ömer](/Ömer) loves tennis. Indeed.
+[Ömer](/Ömer) loves tennis.

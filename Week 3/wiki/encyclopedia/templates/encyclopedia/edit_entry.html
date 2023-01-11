@@ -8,7 +8,7 @@
 <div>
     Entry Title: {{ title }}
 </div>
-<form action = "/edit/{{ title }}" method = "POST">
+<form action = "/wiki/edit/{{ title }}" method = "POST">
 {% csrf_token %}
 <textarea name = "content">{{ content|safe }}</textarea>
     <input type = "submit">
