@@ -21,7 +21,7 @@ document.addEventListener('DOMContentLoaded', function() {
       console.log(result);
     });
 
-    // load sent mailbox
+    // Load sent mailbox
     load_mailbox('sent');
     return false;
   }
@@ -50,4 +50,17 @@ function load_mailbox(mailbox) {
 
   // Show the mailbox name
   document.querySelector('#emails-view').innerHTML = `<h3>${mailbox.charAt(0).toUpperCase() + mailbox.slice(1)}</h3>`;
+
+  const emailView = document.querySelector('#emails-view');
+  const maildiv = document.createElement('div');
+  maildiv.className = 'email';
+
+  fetch(`/emails/${mailbox}`)
+  .then(response => response.json())
+  .then(emails => {
+    emails.forEach(email => {
+      maildiv.innerHTML = `<p>From: <b>${email.sender}</b><br>Subject: ${email.subject}</p><p class="timestamp">${email.timestamp}</p>`;
+      emailView.append(maildiv);
+    });
+  });
 }
