@@ -61,9 +61,7 @@ function load_mailbox(mailbox) {
   fetch(`/emails/${mailbox}`)
   .then(response => response.json())
   .then(emails => {
-    console.log(emails);
     emails.forEach(email => {
-      console.log(email);
       let maildiv = document.createElement('div');
       maildiv.className = 'email';
       maildiv.id = `mail no ${email.id}`;
