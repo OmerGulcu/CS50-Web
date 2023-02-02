@@ -60,6 +60,10 @@ function load_mailbox(mailbox) {
       let maildiv = document.createElement('div');
       maildiv.className = 'email';
       maildiv.innerHTML = `<p>From: <b>${email.sender}</b><br>Subject: ${email.subject}</p><p class="timestamp">${email.timestamp}</p>`;
+      if (email.read === true) {
+        maildiv.style.backgroundColor = 'lightgrey';
+      }
+      console.log(email);
       emailView.append(maildiv);
     });
   });
