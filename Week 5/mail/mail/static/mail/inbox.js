@@ -33,6 +33,9 @@ document.addEventListener('DOMContentLoaded', function() {
 function compose_email() {
 
   // Show compose view and hide other views
+  const emailView = document.querySelector('#email-view');
+  emailView.innerHTML = '';
+  emailView.style.display = 'none';
   document.querySelector('#emails-view').style.display = 'none';
   document.querySelector('#compose-view').style.display = 'block';
 
@@ -45,26 +48,67 @@ function compose_email() {
 function load_mailbox(mailbox) {
   
   // Show the mailbox and hide other views
-  document.querySelector('#emails-view').style.display = 'block';
+  const emailView = document.querySelector('#email-view');
+  emailView.innerHTML = '';
+  emailView.style.display = 'none';
+  const emailsView = document.querySelector('#emails-view');
+  emailsView.style.display = 'block';
   document.querySelector('#compose-view').style.display = 'none';
 
   // Show the mailbox name
-  document.querySelector('#emails-view').innerHTML = `<h3>${mailbox.charAt(0).toUpperCase() + mailbox.slice(1)}</h3>`;
-
-  const emailView = document.querySelector('#emails-view');
+  emailsView.innerHTML = `<h3>${mailbox.charAt(0).toUpperCase() + mailbox.slice(1)}</h3>`;
 
   fetch(`/emails/${mailbox}`)
   .then(response => response.json())
   .then(emails => {
+    console.log(emails);
     emails.forEach(email => {
+      console.log(email);
       let maildiv = document.createElement('div');
       maildiv.className = 'email';
+      maildiv.id = `mail no ${email.id}`;
       maildiv.innerHTML = `<p>From: <b>${email.sender}</b><br>Subject: ${email.subject}</p><p class="timestamp">${email.timestamp}</p>`;
       if (email.read === true) {
         maildiv.style.backgroundColor = 'lightgrey';
       }
-      console.log(email);
-      emailView.append(maildiv);
+      emailsView.append(maildiv);
+    })
+  })
+  .then(() => { // Anchor the previews to the mail view
+    document.querySelectorAll('.email').forEach(div => {
+      div.onclick = () => {
+        view_email(div.id.substring(8));
+      }
+    });
+  });
+}
+
+function view_email(id) {
+  const emailView = document.querySelector('#email-view');
+  const emailsView = document.querySelector('#emails-view');
+
+  emailsView.style.display = 'none';
+  document.querySelector('#compose-view').style.display = 'none';
+  emailView.style.display = 'block';
+
+  fetch(`/emails/${id}`)
+  .then(response => response.json())
+  .then(email => {
+    let body = '';
+    for (let i = 0; i < email.body.length; i++) {
+      if (email.body.charAt(i) === '\n') {
+        body += '<br>'
+      }
+      else {
+        body += email.body.charAt(i);
+      }
+    }
+    emailView.innerHTML = `From: <b>${email.sender}</b><br>To: <b>${email.recipients.join(', ')}</b><br><br><h4>${email.subject}</h4><p class="timestamp">${email.timestamp}</p>${body}`;
+    fetch(`/emails/${email.id}`, {
+      method: 'PUT',
+      body: JSON.stringify({
+        read: true
+      })
     });
   });
 }

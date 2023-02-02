@@ -9,6 +9,10 @@ textarea {
     margin-bottom: 10px;
 }
 
+.email:hover {
+    box-shadow: 0px 0px 0px 1px black;
+}
+
 p {
     margin-bottom: 0px;
 }
