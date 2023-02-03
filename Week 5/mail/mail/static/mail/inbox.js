@@ -65,7 +65,7 @@ function load_mailbox(mailbox) {
       let maildiv = document.createElement('div');
       maildiv.className = 'email';
       maildiv.id = `mail no ${email.id}`;
-      maildiv.innerHTML = `<p>From: <b>${email.sender}</b><br>Subject: ${email.subject}</p><p class="timestamp">${email.timestamp}</p>`;
+      maildiv.innerHTML = `<div class="preview_left"><p>From: <b>${email.sender}</b><br>Subject: ${email.subject}</p><p class="timestamp">${email.timestamp}</p></div><div class="preview_right"><img class="preview_image" id="archive no ${email.id}" src="http://127.0.0.1:8000/static/mail/download-button.png"></div>`;
       if (email.read === true) {
         maildiv.style.backgroundColor = 'lightgrey';
       }
@@ -73,6 +73,33 @@ function load_mailbox(mailbox) {
     })
   })
   .then(() => { // Anchor the previews to the mail view
+    document.querySelectorAll('.preview_image').forEach(image => {
+      image.onclick = (event) => {
+        if (mailbox === 'inbox') {
+          fetch(`/emails/${image.id.substring(11)}`, {
+            method: 'PUT',
+            body: JSON.stringify({
+              archived: true
+            })
+          })
+          .then(() => {
+            load_mailbox('inbox');
+          });
+        }
+        else if (mailbox === 'archive') {
+          fetch(`/emails/${image.id.substring(11)}`, {
+            method: 'PUT',
+            body: JSON.stringify({
+              archived: false
+            })
+          })
+          .then(() => {
+            load_mailbox('inbox');
+          });
+        }
+        event.stopPropagation();
+      }
+    })
     document.querySelectorAll('.email').forEach(div => {
       div.onclick = () => {
         view_email(div.id.substring(8));
