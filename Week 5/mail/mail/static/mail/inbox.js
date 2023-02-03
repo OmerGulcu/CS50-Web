@@ -75,7 +75,7 @@ function load_mailbox(mailbox) {
   .then(() => { // Anchor the previews to the mail view
     document.querySelectorAll('.preview_image').forEach(image => {
       image.onclick = (event) => {
-        toggle_archive(mailbox, image.id.substring(11))
+        toggle_archive(image.id.substring(11))
         event.stopPropagation();
       }
     })
@@ -107,31 +107,41 @@ function view_email(id) {
         body += email.body.charAt(i);
       }
     }
-    emailView.innerHTML = `From: <b>${email.sender}</b><br>To: <b>${email.recipients.join(', ')}</b><br><br><h4>${email.subject}</h4><p class="timestamp">${email.timestamp}</p>${body}`;
+    let archiveLabel;
+    if (email.archived) {
+      archiveLabel = "Unarchive";
+    }
+    else {
+      archiveLabel = "Archive";
+    }
+    emailView.innerHTML = `From: <b>${email.sender}</b><br>To: <b>${email.recipients.join(', ')}</b><br><br><h4>${email.subject}</h4><p class="timestamp">${email.timestamp}</p>${body}<br><br><br><br>${archiveLabel} <img id="view_image" src="http://127.0.0.1:8000/static/mail/download-button.png">`;
     fetch(`/emails/${email.id}`, {
       method: 'PUT',
       body: JSON.stringify({
         read: true
       })
     });
+    return email;
+  })
+  .then(email => {
+    document.querySelector('#view_image').addEventListener('click', () => {
+      toggle_archive(email.id);
+    });
   });
 }
 
-function toggle_archive(mailbox, id) {
-  let archive;
-  if (mailbox === 'inbox') {
-    archive = true;
-  }
-  else if (mailbox === 'archive') {
-    archive = false;
-  }
-  fetch(`/emails/${id}`, {
-    method: 'PUT',
-    body: JSON.stringify({
-      archived: archive
+function toggle_archive(id) {
+  fetch(`/emails/${id}`)
+  .then(response => response.json())
+  .then(email => {
+    fetch(`/emails/${id}`, {
+      method: 'PUT',
+      body: JSON.stringify({
+        archived: !email.archived
+      })
     })
-  })
-  .then(() => {
-    load_mailbox('inbox');
+    .then(() => {
+      load_mailbox('inbox');
+    });
   });
 }
