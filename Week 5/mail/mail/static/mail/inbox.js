@@ -4,8 +4,53 @@ document.addEventListener('DOMContentLoaded', function() {
   document.querySelector('#inbox').addEventListener('click', () => load_mailbox('inbox'));
   document.querySelector('#sent').addEventListener('click', () => load_mailbox('sent'));
   document.querySelector('#archived').addEventListener('click', () => load_mailbox('archive'));
-  document.querySelector('#compose').addEventListener('click', compose_email);
+  document.querySelector('#compose').addEventListener('click', () => compose_email(null));
 
+  // By default, load the inbox
+  load_mailbox('inbox');
+});
+
+function compose_email(email) {
+
+  // Show compose view and hide other views
+  const emailView = document.querySelector('#email-view');
+  emailView.innerHTML = '';
+  emailView.style.display = 'none';
+  document.querySelector('#emails-view').style.display = 'none';
+  document.querySelector('#compose-view').style.display = 'block';
+
+  let compose_recipients = document.querySelector('#compose-recipients');
+  let compose_subject = document.querySelector('#compose-subject');
+  let compose_body = document.querySelector('#compose-body');
+  if (!email) {
+    // Clear out composition fields
+    compose_recipients.value = '';
+    compose_recipients.disabled = false;
+    compose_recipients.focus();
+    compose_subject.value = '';
+    compose_subject.disabled = false;
+    compose_body.value = '';
+  }
+  else {
+    compose_recipients.value = email.sender;
+    compose_recipients.disabled = true;
+    if (email.subject.substring(0, 4) !== 'Re: ') {
+      compose_subject.value = `Re: ${email.subject}`;
+    }
+    else {
+      compose_subject.value = email.subject;
+    }
+    compose_subject.disabled = true;
+    compose_body.focus();
+    if (email.body.indexOf('---Type your reply after this line---') === -1) {
+      compose_body.value = `On ${email.timestamp} ${email.sender} wrote:\n${email.body}\n\n---Type your reply after this line---\n`;
+    }
+    else {
+      compose_body.value = `${email.body.replace('---Type your reply after this line---', `On ${email.timestamp} ${email.sender} replied:`)}\n\n---Type your reply after this line---\n`;
+    }
+    
+  }
+  
   // Compose form sends the mail
   document.querySelector('#compose-form').onsubmit = () => {
     fetch('/emails', {
@@ -19,30 +64,14 @@ document.addEventListener('DOMContentLoaded', function() {
     .then(response => response.json())
     .then(result => {
       console.log(result);
+    })
+    .then(() => {
+      // Load sent mailbox
+      load_mailbox('sent');
     });
 
-    // Load sent mailbox
-    load_mailbox('sent');
     return false;
   }
-
-  // By default, load the inbox
-  load_mailbox('inbox');
-});
-
-function compose_email() {
-
-  // Show compose view and hide other views
-  const emailView = document.querySelector('#email-view');
-  emailView.innerHTML = '';
-  emailView.style.display = 'none';
-  document.querySelector('#emails-view').style.display = 'none';
-  document.querySelector('#compose-view').style.display = 'block';
-
-  // Clear out composition fields
-  document.querySelector('#compose-recipients').value = '';
-  document.querySelector('#compose-subject').value = '';
-  document.querySelector('#compose-body').value = '';
 }
 
 function load_mailbox(mailbox) {
@@ -114,7 +143,8 @@ function view_email(id) {
     else {
       archiveLabel = "Archive";
     }
-    emailView.innerHTML = `From: <b>${email.sender}</b><br>To: <b>${email.recipients.join(', ')}</b><br><br><h4>${email.subject}</h4><p class="timestamp">${email.timestamp}</p>${body}<br><br><br><br>${archiveLabel} <img id="view_image" src="http://127.0.0.1:8000/static/mail/download-button.png">`;
+    emailView.innerHTML = `From: <b>${email.sender}</b><br>To: <b>${email.recipients.join(', ')}</b><br><br><h4>${email.subject}</h4><p class="timestamp">${email.timestamp}</p>${body}
+    <br><br><br><br>Reply &nbsp&nbsp&nbsp<img class="view_mail_image" id="reply_image" src="http://127.0.0.1:8000/static/mail/reply.png"><br>${archiveLabel} <img class="view_mail_image" id="archive_image" src="http://127.0.0.1:8000/static/mail/download-button.png">`;
     fetch(`/emails/${email.id}`, {
       method: 'PUT',
       body: JSON.stringify({
@@ -124,8 +154,11 @@ function view_email(id) {
     return email;
   })
   .then(email => {
-    document.querySelector('#view_image').addEventListener('click', () => {
+    document.querySelector('#archive_image').addEventListener('click', () => {
       toggle_archive(email.id);
+    });
+    document.querySelector('#reply_image').addEventListener('click', () => {
+      compose_email(email);
     });
   });
 }

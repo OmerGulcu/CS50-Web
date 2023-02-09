@@ -38,12 +38,12 @@ textarea {
     opacity: 100%;
 }
 
-#view_image {
+.view_mail_image {
     width: 32px;
     height: auto;
     opacity: 70%;
 }
 
-#view_image:hover {
+.view_mail_image:hover {
     opacity: 100%;
 }
