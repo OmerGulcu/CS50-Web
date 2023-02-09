@@ -3,18 +3,16 @@ textarea {
 }
 
 .email {
+    display: flex;
     border: 1px solid black;
     padding: 10px;
     border-radius: 5px;
-    margin-bottom: 10px;
+    margin-bottom: 4px;
+    align-items: center;
 }
 
 .email:hover {
     box-shadow: 0px 0px 0px 1px black;
-}
-
-p {
-    margin-bottom: 0px;
 }
 
 .timestamp {
@@ -22,21 +20,17 @@ p {
 }
 
 .preview_left {
-    width: 90%;
-    display: inline-block;
+    width: 70%;
 }
 
 .preview_right {
-    width: 10%;
-    max-height: 100px;
-    display: inline-block;
+    width: 30%;
+    text-align: right;
 }
 
 .preview_image {
     width: 32px;
     height: auto;
-    float: right;
-    margin-right: 10px;
     opacity: 70%;
 }
 

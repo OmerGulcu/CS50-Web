@@ -65,7 +65,7 @@ function load_mailbox(mailbox) {
       let maildiv = document.createElement('div');
       maildiv.className = 'email';
       maildiv.id = `mail no ${email.id}`;
-      maildiv.innerHTML = `<div class="preview_left"><p>From: <b>${email.sender}</b><br>Subject: ${email.subject}</p><p class="timestamp">${email.timestamp}</p></div><div class="preview_right"><img class="preview_image" id="archive no ${email.id}" src="http://127.0.0.1:8000/static/mail/download-button.png"></div>`;
+      maildiv.innerHTML = `<span class="preview_left"><b>${email.sender} </b>&nbsp&nbsp${email.subject}</span><span class="preview_right"><span class="timestamp">${email.timestamp} &nbsp&nbsp</span><img class="preview_image" id="archive no ${email.id}" src="http://127.0.0.1:8000/static/mail/download-button.png"></span>`;
       if (email.read === true) {
         maildiv.style.backgroundColor = 'lightgrey';
       }
